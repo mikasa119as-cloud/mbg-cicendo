@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBG Cicendo — Sistem Manajemen Operasional</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --green: #16a34a;
+  --green-light: #22c55e;
+  --green-dark: #14532d;
+  --green-pale: #dcfce7;
+  --gold: #f59e0b;
+  --gold-light: #fbbf24;
+  --gold-pale: #fef3c7;
+  --navy: #0f172a;
+  --navy-mid: #1e293b;
+  --slate: #334155;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --surface: #f8fafc;
+  --white: #ffffff;
+  --red: #ef4444;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-lg: 20px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #f0fdf4;
+  color: var(--navy);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* === SIDEBAR === */
+.app { display:flex; min-height:100vh; }
+.sidebar {
+  width: 260px;
+  background: linear-gradient(165deg, #0f4c25 0%, #14532d 50%, #166534 100%);
+  position: fixed; top:0; left:0; height:100vh;
+  display:flex; flex-direction:column;
+  transition: transform .3s ease;
+  z-index: 100;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+}
+.sidebar-logo {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.logo-badge {
+  display:flex; align-items:center; gap:12px;
+}
+.logo-icon {
+  width:44px; height:44px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius: 12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; box-shadow: 0 4px 12px rgba(245,158,11,0.4);
+}
+.logo-text { line-height:1.2; }
+.logo-text .brand { font-family:'Space Grotesk',sans-serif; font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.3px; }
+.logo-text .sub { font-size:10px; color:rgba(255,255,255,0.55); font-weight:500; letter-spacing:1.5px; text-transform:uppercase; }
+
+.sidebar-nav { flex:1; padding:16px 12px; overflow-y:auto; }
+.nav-section-label {
+  font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  color:rgba(255,255,255,0.35); padding:12px 12px 6px; margin-top:4px;
+}
+.nav-item {
+  display:flex; align-items:center; gap:12px;
+  padding:11px 14px; border-radius:10px;
+  color:rgba(255,255,255,0.65); font-size:13.5px; font-weight:500;
+  cursor:pointer; transition:all .2s;
+  margin-bottom:2px; text-decoration:none;
+}
+.nav-item:hover { background:rgba(255,255,255,0.1); color:#fff; }
+.nav-item.active {
+  background: rgba(255,255,255,0.18);
+  color:#fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.nav-item .nav-icon { width:20px; text-align:center; font-size:14px; }
+.nav-item .badge {
+  margin-left:auto; background:var(--gold); color:#fff;
+  font-size:9px; font-weight:700; padding:2px 7px; border-radius:20px;
+  min-width:18px; text-align:center;
+}
+
+.sidebar-footer {
+  padding:16px; border-top:1px solid rgba(255,255,255,0.1);
+}
+.user-card {
+  display:flex; align-items:center; gap:10px;
+  padding:10px; background:rgba(255,255,255,0.1); border-radius:10px;
+}
+.user-avatar {
+  width:36px; height:36px; background:linear-gradient(135deg, var(--gold), #f97316);
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:14px; color:#fff; font-weight:700;
+}
+.user-info .name { font-size:13px; font-weight:600; color:#fff; }
+.user-info .role { font-size:10px; color:rgba(255,255,255,0.5); }
+
+/* === MAIN CONTENT === */
+.main {
+  margin-left:260px; flex:1;
+  display:flex; flex-direction:column;
+  min-height:100vh;
+}
+.topbar {
+  background:#fff; padding:0 28px;
+  height:64px; display:flex; align-items:center;
+  border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:50;
+  gap:16px;
+  box-shadow: var(--shadow-sm);
+}
+.topbar-title { font-size:17px; font-weight:700; color:var(--navy); flex:1; }
+.topbar-title span { color:var(--green); }
+.topbar-actions { display:flex; align-items:center; gap:10px; }
+.topbar-btn {
+  width:38px; height:38px; border-radius:10px;
+  background:var(--surface); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--muted); font-size:15px;
+  position:relative; transition:all .2s;
+}
+.topbar-btn:hover { background:var(--green-pale); color:var(--green); border-color:var(--green-light); }
+.notif-dot { position:absolute; top:6px; right:6px; width:7px; height:7px; background:var(--red); border-radius:50%; border:1.5px solid #fff; }
+
+.date-badge {
+  background:var(--green-pale); color:var(--green-dark); font-size:12px; font-weight:600;
+  padding:6px 14px; border-radius:20px; border:1px solid #bbf7d0;
+}
+
+/* === PAGES === */
+.page { display:none; padding:28px; animation:fadeIn .35s ease; }
+.page.active { display:block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* === CARDS === */
+.card {
+  background:#fff; border-radius:var(--radius); border:1px solid var(--border);
+  box-shadow:var(--shadow-sm); overflow:hidden;
+}
+.card-header {
+  padding:18px 20px 14px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.card-title { font-size:15px; font-weight:700; color:var(--navy); display:flex; align-items:center; gap:8px; }
+.card-body { padding:20px; }
+.card-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px; }
+
+/* === STAT CARDS === */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.stat-card {
+  background:#fff; border-radius:var(--radius); padding:20px;
+  border:1px solid var(--border); box-shadow:var(--shadow-sm);
+  position:relative; overflow:hidden; transition:transform .2s, box-shadow .2s;
+}
+.stat-card:hover { transform:translateY(-2px); box-shadow:var(--shadow); }
+.stat-card::before {
+  content:''; position:absolute; top:0; right:0;
+  width:80px; height:80px; border-radius:0 0 0 80px; opacity:.08;
+}
+.stat-card.green::before { background:var(--green); }
+.stat-card.gold::before { background:var(--gold); }
+.stat-card.blue::before { background:var(--blue); }
+.stat-card.purple::before { background:var(--purple); }
+.stat-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:8px; }
+.stat-value { font-family:'Space Grotesk',sans-serif; font-size:28px; font-weight:700; color:var(--navy); line-height:1; margin-bottom:6px; }
+.stat-change { font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px; }
+.stat-change.up { color:var(--green); }
+.stat-change.down { color:var(--red); }
+.stat-icon {
+  position:absolute; top:18px; right:18px;
+  width:40px; height:40px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px;
+}
+.stat-card.green .stat-icon { background:var(--green-pale); color:var(--green); }
+.stat-card.gold .stat-icon { background:var(--gold-pale); color:var(--gold); }
+.stat-card.blue .stat-icon { background:#dbeafe; color:var(--blue); }
+.stat-card.purple .stat-icon { background:#ede9fe; color:var(--purple); }
+
+/* === GRID LAYOUTS === */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+.gap-20 { gap:20px; }
+.mb-20 { margin-bottom:20px; }
+.mb-24 { margin-bottom:24px; }
+
+/* === SECTION HEADER === */
+.section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+.section-title { font-size:18px; font-weight:800; color:var(--navy); }
+.section-title span { color:var(--green); }
+.section-subtitle { font-size:13px; color:var(--muted); margin-top:2px; }
+
+/* === BUTTONS === */
+.btn {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:9px 18px; border-radius:9px; font-size:13px; font-weight:600;
+  cursor:pointer; transition:all .2s; border:none; font-family:inherit;
+}
+.btn-primary { background:var(--green); color:#fff; }
+.btn-primary:hover { background:#15803d; transform:translateY(-1px); box-shadow:0 4px 12px rgba(22,163,74,0.35); }
+.btn-secondary { background:var(--surface); color:var(--navy); border:1px solid var(--border); }
+.btn-secondary:hover { background:var(--green-pale); border-color:var(--green-light); color:var(--green-dark); }
+.btn-gold { background:var(--gold); color:#fff; }
+.btn-gold:hover { background:#d97706; }
+.btn-sm { padding:6px 12px; font-size:12px; border-radius:7px; }
+.btn-danger { background:#fee2e2; color:var(--red); border:1px solid #fecaca; }
+.btn-danger:hover { background:var(--red); color:#fff; }
+
+/* === BADGES / PILLS === */
+.badge {
+  display:inline-flex; align-items:center; gap:4px;
+  font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px;
+}
+.badge-green { background:var(--green-pale); color:var(--green-dark); }
+.badge-gold { background:var(--gold-pale); color:#92400e; }
+.badge-red { background:#fee2e2; color:#991b1b; }
+.badge-blue { background:#dbeafe; color:#1e40af; }
+.badge-gray { background:var(--surface); color:var(--muted); border:1px solid var(--border); }
+.badge-purple { background:#ede9fe; color:#5b21b6; }
+
+/* === TABLE === */
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; }
+thead { background:var(--surface); }
+th { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); padding:12px 16px; text-align:left; white-space:nowrap; }
+td { padding:13px 16px; font-size:13.5px; color:var(--slate); border-bottom:1px solid var(--border); }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:#f8fffe; }
+.td-bold { font-weight:700; color:var(--navy); }
+
+/* === PROGRESS BAR === */
+.progress-bar { height:6px; background:var(--border); border-radius:99px; overflow:hidden; }
+.progress-fill { height:100%; border-radius:99px; transition:width .6s ease; }
+.progress-fill.green { background:linear-gradient(90deg, var(--green-light), var(--green)); }
+.progress-fill.gold { background:linear-gradient(90deg, var(--gold-light), var(--gold)); }
+.progress-fill.blue { background:linear-gradient(90deg, #60a5fa, var(--blue)); }
+.progress-fill.red { background:linear-gradient(90deg, #f87171, var(--red)); }
+
+/* === ATTENDANCE GRID === */
+.attendance-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
+.emp-card {
+  background:#fff; border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px; text-align:center; transition:all .2s; cursor:pointer;
+  position:relative; overflow:hidden;
+}
+.emp-card:hover { border-color:var(--green-light); box-shadow:var(--shadow); transform:translateY(-2px); }
+.emp-card.checked-in { border-color:var(--green-light); background:linear-gradient(145deg,#f0fdf4,#fff); }
+.emp-card.checked-in::after {
+  content:'✓'; position:absolute; top:10px; right:12px;
+  background:var(--green); color:#fff; width:20px; height:20px;
+  border-radius:50%; font-size:11px; display:flex; align-items:center; justify-content:center;
+  line-height:20px;
+}
+.emp-avatar {
+  width:52px; height:52px; border-radius:50%; margin:0 auto 10px;
+  display:flex; align-items:center; justify-content:center; font-size:20px;
+  font-weight:700; color:#fff; font-family:'Space Grotesk',sans-serif;
+}
+.emp-name { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:2px; }
+.emp-role { font-size:11px; color:var(--muted); margin-bottom:10px; }
+.emp-time { font-size:12px; font-weight:600; }
+
+/* === FORM ELEMENTS === */
+.form-group { margin-bottom:16px; }
+.form-label { font-size:12px; font-weight:700; color:var(--slate); margin-bottom:6px; display:block; text-transform:uppercase; letter-spacing:.5px; }
+.form-input, .form-select, .form-textarea {
+  width:100%; padding:11px 14px; border:1.5px solid var(--border);
+  border-radius:9px; font-size:13.5px; color:var(--navy); font-family:inherit;
+  background:#fff; transition:border-color .2s, box-shadow .2s;
+  outline:none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color:var(--green); box-shadow:0 0 0 3px rgba(22,163,74,0.12);
+}
+.form-textarea { resize:vertical; min-height:90px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+/* === DONUT CHART (CSS) === */
+.donut-wrap { position:relative; width:160px; height:160px; margin:0 auto 16px; }
+.donut-chart {
+  width:160px; height:160px; border-radius:50%;
+  background: conic-gradient(
+    var(--green) 0% 62%,
+    var(--gold) 62% 80%,
+    var(--blue) 80% 91%,
+    var(--border) 91% 100%
+  );
+  display:flex; align-items:center; justify-content:center;
+  position:relative;
+}
+.donut-hole {
+  width:100px; height:100px; background:#fff; border-radius:50%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  position:absolute;
+}
+.donut-value { font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:700; color:var(--navy); line-height:1; }
+.donut-sub { font-size:10px; color:var(--muted); font-weight:600; }
+.legend-item { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--slate); margin-bottom:6px; }
+.legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+/* === NOTIFICATION PANEL === */
+.notif-list { }
+.notif-item {
+  display:flex; gap:12px; padding:14px 0;
+  border-bottom:1px solid var(--border);
+}
+.notif-item:last-child { border-bottom:none; }
+.notif-dot-icon {
+  width:38px; height:38px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; flex-shrink:0;
+}
+.notif-item .notif-time { font-size:11px; color:var(--muted); margin-top:2px; }
+.notif-item .notif-text { font-size:13px; color:var(--slate); line-height:1.5; }
+.notif-item .notif-title { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:2px; }
+
+/* === QUICK ACTION GRID === */
+.quick-actions { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+.qa-card {
+  background:#fff; border:1px solid var(--border); border-radius:var(--radius);
+  padding:18px 14px; text-align:center; cursor:pointer;
+  transition:all .25s; display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.qa-card:hover { border-color:var(--green-light); box-shadow:var(--shadow); transform:translateY(-3px); background:linear-gradient(145deg,#f0fdf4,#fff); }
+.qa-icon { width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; }
+.qa-label { font-size:12px; font-weight:700; color:var(--navy); }
+.qa-sub { font-size:10.5px; color:var(--muted); }
+
+/* === TIMELINE === */
+.timeline { position:relative; }
+.timeline::before { content:''; position:absolute; left:18px; top:0; bottom:0; width:2px; background:var(--border); }
+.timeline-item { display:flex; gap:16px; margin-bottom:20px; position:relative; }
+.timeline-dot {
+  width:36px; height:36px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; position:relative; z-index:1; border:2.5px solid #fff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+.timeline-content { flex:1; padding-top:4px; }
+.timeline-title { font-size:13.5px; font-weight:700; color:var(--navy); margin-bottom:2px; }
+.timeline-desc { font-size:12px; color:var(--muted); }
+.timeline-time { font-size:11px; color:var(--muted); margin-top:4px; }
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:99px; }
+::-webkit-scrollbar-thumb:hover { background:var(--muted); }
+
+/* === MODAL === */
+.modal-overlay {
+  display:none; position:fixed; inset:0; background:rgba(15,23,42,0.55);
+  z-index:200; align-items:center; justify-content:center; backdrop-filter:blur(4px);
+}
+.modal-overlay.open { display:flex; animation:fadeIn .2s; }
+.modal {
+  background:#fff; border-radius:var(--radius-lg); padding:28px;
+  width:100%; max-width:520px; max-height:90vh; overflow-y:auto;
+  box-shadow:var(--shadow-lg);
+}
+.modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
+.modal-title { font-size:17px; font-weight:800; color:var(--navy); }
+.modal-close { width:32px; height:32px; border-radius:8px; background:var(--surface); border:none; cursor:pointer; color:var(--muted); font-size:16px; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+.modal-close:hover { background:var(--red); color:#fff; }
+
+/* === WEATHER WIDGET === */
+.weather-strip {
+  background:linear-gradient(135deg,#0f4c25,#166534);
+  border-radius:var(--radius); padding:20px; color:#fff;
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;
+  overflow:hidden; position:relative;
+}
+.weather-strip::before {
+  content:''; position:absolute; right:-20px; top:-20px;
+  width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.05);
+}
+.weather-strip::after {
+  content:''; position:absolute; right:60px; top:10px;
+  width:60px; height:60px; border-radius:50%; background:rgba(255,255,255,0.05);
+}
+.weather-temp { font-family:'Space Grotesk',sans-serif; font-size:42px; font-weight:700; }
+.weather-desc { font-size:14px; opacity:.75; margin-top:2px; }
+.weather-location { font-size:12px; opacity:.5; display:flex; align-items:center; gap:4px; }
+.weather-icon { font-size:50px; opacity:.9; }
+
+/* === ANIMATIONS === */
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+@keyframes spin { to{transform:rotate(360deg)} }
+@keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+@keyframes countUp { from{opacity:0;transform:scale(.9)} to{opacity:1;transform:scale(1)} }
+.animate-pulse { animation:pulse 2s infinite; }
+.loading-spin { animation:spin 1s linear infinite; }
+
+/* === ALERT === */
+.alert { padding:12px 16px; border-radius:10px; font-size:13px; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+.alert-green { background:var(--green-pale); color:var(--green-dark); border:1px solid #bbf7d0; }
+.alert-gold { background:var(--gold-pale); color:#92400e; border:1px solid #fde68a; }
+.alert-red { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; }
+
+/* === FINANCE === */
+.finance-summary { display:flex; gap:2px; height:10px; border-radius:99px; overflow:hidden; margin:12px 0; }
+.fs-bar { transition:width .5s; }
+
+/* === CHART BAR === */
+.bar-chart { display:flex; align-items:flex-end; gap:8px; height:120px; padding-top:8px; }
+.bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.bar-fill { width:100%; border-radius:6px 6px 0 0; transition:height .6s ease; min-height:4px; }
+.bar-label { font-size:10px; color:var(--muted); font-weight:600; white-space:nowrap; }
+.bar-val { font-size:10px; font-weight:700; color:var(--navy); }
+
+/* === SHIFT TABLE === */
+.shift-grid {
+  display:grid;
+  grid-template-columns:120px repeat(7,1fr);
+  gap:1px; background:var(--border); border-radius:var(--radius); overflow:hidden;
+}
+.shift-cell {
+  background:#fff; padding:10px 8px; font-size:11px; text-align:center;
+}
+.shift-header { background:var(--surface); font-weight:700; font-size:10px; letter-spacing:.5px; color:var(--muted); text-transform:uppercase; }
+.shift-name { font-weight:700; color:var(--navy); font-size:12px; text-align:left; padding-left:12px; }
+.shift-badge { border-radius:6px; padding:4px 6px; font-size:10px; font-weight:700; }
+
+/* === RESPONSIVE === */
+@media(max-width:1024px) {
+  .stats-grid { grid-template-columns:repeat(2,1fr); }
+  .grid-2 { grid-template-columns:1fr; }
+}
+@media(max-width:768px) {
+  .sidebar { transform:translateX(-100%); }
+  .main { margin-left:0; }
+  .quick-actions { grid-template-columns:repeat(2,1fr); }
+}
+
+/* === REPORT CARD === */
+.report-card {
+  background:#fff; border-radius:var(--radius); border:1px solid var(--border);
+  padding:20px; transition:all .2s; cursor:pointer;
+}
+.report-card:hover { box-shadow:var(--shadow); transform:translateY(-2px); border-color:var(--green-light); }
+.report-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; margin-bottom:12px; }
+.report-title { font-size:14px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.report-desc { font-size:12px; color:var(--muted); line-height:1.5; }
+.report-footer { margin-top:14px; display:flex; align-items:center; justify-content:space-between; }
+
+/* === STOCK STATUS === */
+.stock-row { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+.stock-row:last-child { border-bottom:none; }
+.stock-name { flex:1; font-size:13.5px; font-weight:600; color:var(--navy); }
+.stock-detail { font-size:11px; color:var(--muted); margin-top:1px; }
+.stock-qty { font-family:'Space Grotesk',sans-serif; font-size:18px; font-weight:700; min-width:50px; text-align:right; }
+.stock-unit { font-size:10px; color:var(--muted); }
+
+/* === PAGE HEADER === */
+.page-hero {
+  background:linear-gradient(135deg,#0f4c25,#166534,#15803d);
+  border-radius:var(--radius-lg); padding:28px 32px; color:#fff; margin-bottom:24px;
+  position:relative; overflow:hidden;
+}
+.page-hero::before {
+  content:''; position:absolute; right:-30px; top:-30px;
+  width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,0.06);
+}
+.page-hero::after {
+  content:''; position:absolute; right:80px; bottom:-40px;
+  width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.04);
+}
+.page-hero h1 { font-size:24px; font-weight:800; margin-bottom:6px; position:relative; z-index:1; }
+.page-hero p { font-size:13px; opacity:.7; position:relative; z-index:1; }
+.page-hero-badge {
+  position:absolute; right:28px; top:50%; transform:translateY(-50%);
+  font-size:64px; opacity:.15; z-index:0;
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-badge">
+        <div class="logo-icon">🍽️</div>
+        <div class="logo-text">
+          <div class="brand">MBG Cicendo</div>
+          <div class="sub">Management System</div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Utama</div>
+      <a class="nav-item active" onclick="showPage('dashboard')">
+        <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
+        Dashboard
+      </a>
+      <a class="nav-item" onclick="showPage('absen')">
+        <span class="nav-icon"><i class="fa-solid fa-fingerprint"></i></span>
+        Absensi Karyawan
+        <span class="badge">3</span>
+      </a>
+      <a class="nav-item" onclick="showPage('jadwal')">
+        <span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span>
+        Jadwal & Shift
+      </a>
+
+      <div class="nav-section-label">Keuangan</div>
+      <a class="nav-item" onclick="showPage('keuangan')">
+        <span class="nav-icon"><i class="fa-solid fa-money-bill-trend-up"></i></span>
+        Keuangan
+      </a>
+      <a class="nav-item" onclick="showPage('akuntansi')">
+        <span class="nav-icon"><i class="fa-solid fa-book-open"></i></span>
+        Akuntansi
+      </a>
+      <a class="nav-item" onclick="showPage('laporan')">
+        <span class="nav-icon"><i class="fa-solid fa-file-chart-column"></i></span>
+        Laporan Harian
+      </a>
+
+      <div class="nav-section-label">Operasional</div>
+      <a class="nav-item" onclick="showPage('inventaris')">
+        <span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
+        Inventaris & Stok
+      </a>
+      <a class="nav-item" onclick="showPage('menu')">
+        <span class="nav-icon"><i class="fa-solid fa-utensils"></i></span>
+        Manajemen Menu
+      </a>
+      <a class="nav-item" onclick="showPage('karyawan')">
+        <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+        Data Karyawan
+      </a>
+
+      <div class="nav-section-label">Lainnya</div>
+      <a class="nav-item" onclick="showPage('notif')">
+        <span class="nav-icon"><i class="fa-solid fa-bell"></i></span>
+        Notifikasi
+        <span class="badge">5</span>
+      </a>
+      <a class="nav-item" onclick="showPage('pengaturan')">
+        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+        Pengaturan
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">M</div>
+        <div class="user-info">
+          <div class="name">Manager Cicendo</div>
+          <div class="role">Admin Utama</div>
+        </div>
+        <i class="fa-solid fa-chevron-right" style="color:rgba(255,255,255,0.3);font-size:11px;margin-left:auto"></i>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-title">Sistem Manajemen <span>MBG Cicendo</span></div>
+      <div class="topbar-actions">
+        <div class="date-badge"><i class="fa-regular fa-calendar"></i> <span id="topbar-date"></span></div>
+        <div class="topbar-btn" onclick="showPage('notif')">
+          <i class="fa-solid fa-bell"></i>
+          <div class="notif-dot"></div>
+        </div>
+        <div class="topbar-btn"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <div class="topbar-btn"><i class="fa-solid fa-circle-question"></i></div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="weather-strip">
+        <div>
+          <div style="font-size:12px;opacity:.55;margin-bottom:4px"><i class="fa-solid fa-location-dot"></i> Cicendo, Bandung</div>
+          <div class="weather-temp" id="clock">07:24</div>
+          <div class="weather-desc" id="weather-desc">Cerah Berawan ☁️</div>
+          <div class="weather-location" id="today-date">Minggu, 1 Juni 2025</div>
+        </div>
+        <div style="text-align:right;position:relative;z-index:1">
+          <div style="font-size:56px;margin-bottom:4px">⛅</div>
+          <div style="font-size:13px;opacity:.7">28°C</div>
+          <div style="font-size:11px;opacity:.45;margin-top:2px">Kelembapan 72%</div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card green">
+          <div class="stat-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+          <div class="stat-label">Pendapatan Hari Ini</div>
+          <div class="stat-value" id="stat-pendapatan">Rp 4,2jt</div>
+          <div class="stat-change up"><i class="fa-solid fa-arrow-trend-up"></i> +12% dari kemarin</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+          <div class="stat-label">Karyawan Hadir</div>
+          <div class="stat-value" id="stat-hadir">18/22</div>
+          <div class="stat-change up"><i class="fa-solid fa-circle-check"></i> 81.8% kehadiran</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon"><i class="fa-solid fa-plate-wheat"></i></div>
+          <div class="stat-label">Porsi Terlayani</div>
+          <div class="stat-value" id="stat-porsi">347</div>
+          <div class="stat-change up"><i class="fa-solid fa-arrow-trend-up"></i> +28 dari target</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
+          <div class="stat-label">Stok Menipis</div>
+          <div class="stat-value" id="stat-stok">4</div>
+          <div class="stat-change down"><i class="fa-solid fa-triangle-exclamation"></i> Perlu restock</div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="section-header">
+        <div>
+          <div class="section-title">Aksi <span>Cepat</span></div>
+          <div class="section-subtitle">Pintasan menu yang sering digunakan</div>
+        </div>
+      </div>
+      <div class="quick-actions mb-24">
+        <div class="qa-card" onclick="showPage('absen')">
+          <div class="qa-icon" style="background:#dcfce7"><span style="font-size:22px">👆</span></div>
+          <div class="qa-label">Absen Masuk</div>
+          <div class="qa-sub">Input kehadiran hari ini</div>
+        </div>
+        <div class="qa-card" onclick="openModal('modal-transaksi')">
+          <div class="qa-icon" style="background:#fef3c7"><span style="font-size:22px">💰</span></div>
+          <div class="qa-label">Catat Transaksi</div>
+          <div class="qa-sub">Input pemasukan/pengeluaran</div>
+        </div>
+        <div class="qa-card" onclick="showPage('laporan')">
+          <div class="qa-icon" style="background:#dbeafe"><span style="font-size:22px">📋</span></div>
+          <div class="qa-label">Laporan Harian</div>
+          <div class="qa-sub">Buat laporan hari ini</div>
+        </div>
+        <div class="qa-card" onclick="showPage('inventaris')">
+          <div class="qa-icon" style="background:#ede9fe"><span style="font-size:22px">📦</span></div>
+          <div class="qa-label">Cek Inventaris</div>
+          <div class="qa-sub">Status stok bahan baku</div>
+        </div>
+        <div class="qa-card" onclick="openModal('modal-karyawan')">
+          <div class="qa-icon" style="background:#fee2e2"><span style="font-size:22px">👤</span></div>
+          <div class="qa-label">Tambah Karyawan</div>
+          <div class="qa-sub">Daftarkan pegawai baru</div>
+        </div>
+        <div class="qa-card" onclick="showPage('menu')">
+          <div class="qa-icon" style="background:#fce7f3"><span style="font-size:22px">🍜</span></div>
+          <div class="qa-label">Kelola Menu</div>
+          <div class="qa-sub">Update menu & harga</div>
+        </div>
+        <div class="qa-card" onclick="showPage('jadwal')">
+          <div class="qa-icon" style="background:#ecfdf5"><span style="font-size:22px">📅</span></div>
+          <div class="qa-label">Jadwal Shift</div>
+          <div class="qa-sub">Atur jadwal kerja</div>
+        </div>
+        <div class="qa-card" onclick="downloadReport()">
+          <div class="qa-icon" style="background:#f1f5f9"><span style="font-size:22px">📥</span></div>
+          <div class="qa-label">Export Laporan</div>
+          <div class="qa-sub">Unduh data harian</div>
+        </div>
+      </div>
+
+      <!-- Charts + Activity -->
+      <div class="grid-2 mb-20">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-chart-line" style="color:var(--green)"></i> Pendapatan 7 Hari Terakhir</div>
+            <span class="badge badge-green">+15% Minggu Ini</span>
+          </div>
+          <div class="card-body">
+            <div class="bar-chart" id="revenue-chart"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-chart-pie" style="color:var(--gold)"></i> Distribusi Pengeluaran</div>
+          </div>
+          <div class="card-body">
+            <div class="donut-wrap">
+              <div class="donut-chart">
+                <div class="donut-hole">
+                  <div class="donut-value">62%</div>
+                  <div class="donut-sub">Surplus</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Bahan Baku — 62%</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div> Gaji & Tunjangan — 18%</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Operasional — 11%</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div> Lain-lain — 9%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-clock-rotate-left" style="color:var(--purple)"></i> Aktivitas Terkini</div>
+            <button class="btn btn-secondary btn-sm">Lihat Semua</button>
+          </div>
+          <div class="card-body" style="padding-top:8px">
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background:#dcfce7;color:var(--green)"><i class="fa-solid fa-check"></i></div>
+                <div class="timeline-content">
+                  <div class="timeline-title">Budi Santoso — Absen Masuk</div>
+                  <div class="timeline-desc">Karyawan berhasil melakukan absensi masuk</div>
+                  <div class="timeline-time">08:02 — Hari ini</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background:var(--gold-pale);color:var(--gold)"><i class="fa-solid fa-money-bill"></i></div>
+                <div class="timeline-content">
+                  <div class="timeline-title">Transaksi Pemasukan — Rp 320.000</div>
+                  <div class="timeline-desc">Penjualan sarapan pagi — 42 porsi</div>
+                  <div class="timeline-time">09:15 — Hari ini</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background:#fee2e2;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="timeline-content">
+                  <div class="timeline-title">Peringatan Stok — Beras</div>
+                  <div class="timeline-desc">Stok beras tersisa 12kg, perlu segera restock</div>
+                  <div class="timeline-time">10:30 — Hari ini</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background:#dbeafe;color:var(--blue)"><i class="fa-solid fa-truck"></i></div>
+                <div class="timeline-content">
+                  <div class="timeline-title">Pengiriman Bahan Baku Diterima</div>
+                  <div class="timeline-desc">Sayur mayur & bumbu dari supplier Pak Ahmad</div>
+                  <div class="timeline-time">11:00 — Hari ini</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-users" style="color:var(--blue)"></i> Status Kehadiran Hari Ini</div>
+            <span class="badge badge-green">18 Hadir</span>
+          </div>
+          <div class="card-body">
+            <div class="progress-bar mb-20" style="height:10px">
+              <div class="progress-fill green" style="width:82%"></div>
+            </div>
+            <table><tbody>
+              <tr><td class="td-bold">Hadir Tepat Waktu</td><td><span class="badge badge-green">14 Orang</span></td></tr>
+              <tr><td class="td-bold">Hadir Terlambat</td><td><span class="badge badge-gold">4 Orang</span></td></tr>
+              <tr><td class="td-bold">Izin/Sakit</td><td><span class="badge badge-blue">2 Orang</span></td></tr>
+              <tr><td class="td-bold">Tanpa Keterangan</td><td><span class="badge badge-red">2 Orang</span></td></tr>
+            </tbody></table>
+            <button class="btn btn-primary" style="width:100%;margin-top:16px;justify-content:center" onclick="showPage('absen')">
+              <i class="fa-solid fa-fingerprint"></i> Kelola Absensi
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABSENSI -->
+    <div class="page" id="page-absen">
+      <div class="page-hero">
+        <h1>👆 Absensi Karyawan</h1>
+        <p>Kelola kehadiran seluruh karyawan MBG Cicendo secara real-time</p>
+        <div class="page-hero-badge">⏰</div>
+      </div>
+
+      <div class="stats-grid mb-24">
+        <div class="stat-card green"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-label">Hadir</div><div class="stat-value">18</div></div>
+        <div class="stat-card gold"><div class="stat-icon"><i class="fa-solid fa-clock"></i></div><div class="stat-label">Terlambat</div><div class="stat-value">4</div></div>
+        <div class="stat-card blue"><div class="stat-icon"><i class="fa-solid fa-notes-medical"></i></div><div class="stat-label">Izin/Sakit</div><div class="stat-value">2</div></div>
+        <div class="stat-card purple"><div class="stat-icon"><i class="fa-solid fa-xmark"></i></div><div class="stat-label">Alpha</div><div class="stat-value">2</div></div>
+      </div>
+
+      <div class="section-header mb-20">
+        <div>
+          <div class="section-title">Daftar <span>Karyawan</span></div>
+          <div class="section-subtitle">Klik kartu untuk input absensi</div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-filter"></i> Filter</button>
+          <button class="btn btn-primary btn-sm" onclick="openModal('modal-absen')"><i class="fa-solid fa-plus"></i> Input Manual</button>
+        </div>
+      </div>
+
+      <div class="attendance-grid" id="attendance-grid"></div>
+    </div>
+
+    <!-- JADWAL SHIFT -->
+    <div class="page" id="page-jadwal">
+      <div class="page-hero">
+        <h1>📅 Jadwal & Shift</h1>
+        <p>Manajemen jadwal dan pembagian shift karyawan</p>
+        <div class="page-hero-badge">🗓️</div>
+      </div>
+
+      <div class="card mb-20">
+        <div class="card-header">
+          <div class="card-title"><i class="fa-solid fa-calendar-week" style="color:var(--green)"></i> Jadwal Shift Minggu Ini</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-chevron-left"></i></button>
+            <span style="padding:6px 14px;font-size:12px;font-weight:600;background:var(--green-pale);border-radius:7px;color:var(--green-dark)">26 Mei — 1 Jun 2025</span>
+            <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="shift-grid" id="shift-table"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-sun" style="color:var(--gold)"></i> Shift Pagi (05:00–13:00)</div></div>
+          <div class="card-body">
+            <table><tbody>
+              <tr><td class="td-bold">Siti Rahayu</td><td><span class="badge badge-green">Aktif</span></td><td style="font-size:12px;color:var(--muted)">Kasir</td></tr>
+              <tr><td class="td-bold">Ahmad Fauzi</td><td><span class="badge badge-green">Aktif</span></td><td style="font-size:12px;color:var(--muted)">Juru Masak</td></tr>
+              <tr><td class="td-bold">Dewi Kusuma</td><td><span class="badge badge-gold">Standby</span></td><td style="font-size:12px;color:var(--muted)">Pelayan</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-moon" style="color:var(--purple)"></i> Shift Sore (13:00–21:00)</div></div>
+          <div class="card-body">
+            <table><tbody>
+              <tr><td class="td-bold">Budi Santoso</td><td><span class="badge badge-green">Aktif</span></td><td style="font-size:12px;color:var(--muted)">Kasir</td></tr>
+              <tr><td class="td-bold">Rina Wati</td><td><span class="badge badge-green">Aktif</span></td><td style="font-size:12px;color:var(--muted)">Juru Masak</td></tr>
+              <tr><td class="td-bold">Hendra Putra</td><td><span class="badge badge-red">Cuti</span></td><td style="font-size:12px;color:var(--muted)">Pelayan</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KEUANGAN -->
+    <div class="page" id="page-keuangan">
+      <div class="page-hero">
+        <h1>💰 Manajemen Keuangan</h1>
+        <p>Pantau pemasukan, pengeluaran, dan arus kas MBG Cicendo</p>
+        <div class="page-hero-badge">💳</div>
+      </div>
+
+      <div class="stats-grid mb-24">
+        <div class="stat-card green"><div class="stat-icon"><i class="fa-solid fa-arrow-trend-up"></i></div><div class="stat-label">Total Pemasukan</div><div class="stat-value">Rp 4,2jt</div><div class="stat-change up"><i class="fa-solid fa-arrow-up"></i> Hari ini</div></div>
+        <div class="stat-card gold"><div class="stat-icon"><i class="fa-solid fa-arrow-trend-down"></i></div><div class="stat-label">Total Pengeluaran</div><div class="stat-value">Rp 2,8jt</div><div class="stat-change down"><i class="fa-solid fa-arrow-down"></i> Hari ini</div></div>
+        <div class="stat-card blue"><div class="stat-icon"><i class="fa-solid fa-scale-balanced"></i></div><div class="stat-label">Laba Bersih</div><div class="stat-value">Rp 1,4jt</div><div class="stat-change up"><i class="fa-solid fa-check"></i> +33% margin</div></div>
+        <div class="stat-card purple"><div class="stat-icon"><i class="fa-solid fa-piggy-bank"></i></div><div class="stat-label">Saldo Kas</div><div class="stat-value">Rp 18,5jt</div><div class="stat-change up"><i class="fa-solid fa-arrow-up"></i> Bulan ini</div></div>
+      </div>
+
+      <div class="grid-2 mb-20">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-list" style="color:var(--green)"></i> Transaksi Hari Ini</div>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-transaksi')"><i class="fa-solid fa-plus"></i> Tambah</button>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Waktu</th><th>Keterangan</th><th>Jenis</th><th>Nominal</th></tr></thead>
+                <tbody>
+                  <tr><td>07:30</td><td class="td-bold">Penjualan Sarapan</td><td><span class="badge badge-green">Masuk</span></td><td class="td-bold" style="color:var(--green)">+Rp 850.000</td></tr>
+                  <tr><td>08:00</td><td class="td-bold">Beli Sayuran</td><td><span class="badge badge-red">Keluar</span></td><td class="td-bold" style="color:var(--red)">-Rp 320.000</td></tr>
+                  <tr><td>09:15</td><td class="td-bold">Penjualan Makan Pagi</td><td><span class="badge badge-green">Masuk</span></td><td class="td-bold" style="color:var(--green)">+Rp 1.240.000</td></tr>
+                  <tr><td>10:00</td><td class="td-bold">Bayar Gas LPG</td><td><span class="badge badge-red">Keluar</span></td><td class="td-bold" style="color:var(--red)">-Rp 180.000</td></tr>
+                  <tr><td>12:30</td><td class="td-bold">Penjualan Makan Siang</td><td><span class="badge badge-green">Masuk</span></td><td class="td-bold" style="color:var(--green)">+Rp 2.100.000</td></tr>
+                  <tr><td>13:00</td><td class="td-bold">Gaji Harian Kasir</td><td><span class="badge badge-red">Keluar</span></td><td class="td-bold" style="color:var(--red)">-Rp 150.000</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-chart-bar" style="color:var(--blue)"></i> Ringkasan Keuangan</div></div>
+          <div class="card-body">
+            <div style="margin-bottom:20px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <span style="font-size:13px;font-weight:600;color:var(--navy)">Pemasukan</span>
+                <span style="font-size:13px;font-weight:700;color:var(--green)">Rp 4.190.000</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill green" style="width:100%"></div></div>
+            </div>
+            <div style="margin-bottom:20px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <span style="font-size:13px;font-weight:600;color:var(--navy)">Pengeluaran</span>
+                <span style="font-size:13px;font-weight:700;color:var(--red)">Rp 2.770.000</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill red" style="width:66%"></div></div>
+            </div>
+            <div style="margin-bottom:20px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <span style="font-size:13px;font-weight:600;color:var(--navy)">Target Harian</span>
+                <span style="font-size:13px;font-weight:700;color:var(--blue)">Rp 4.000.000</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill blue" style="width:105%"></div></div>
+            </div>
+            <div class="alert alert-green">
+              <i class="fa-solid fa-circle-check"></i> <strong>Target tercapai!</strong> Pendapatan hari ini melebihi target sebesar Rp 190.000
+            </div>
+            <div style="background:var(--surface);border-radius:10px;padding:16px;text-align:center">
+              <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Laba Bersih Hari Ini</div>
+              <div style="font-family:'Space Grotesk';font-size:32px;font-weight:700;color:var(--green)">Rp 1.420.000</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px">Margin 33,9%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AKUNTANSI -->
+    <div class="page" id="page-akuntansi">
+      <div class="page-hero">
+        <h1>📒 Akuntansi</h1>
+        <p>Pencatatan jurnal, buku besar, dan laporan keuangan terstruktur</p>
+        <div class="page-hero-badge">🧾</div>
+      </div>
+
+      <div class="grid-3 mb-20">
+        <div class="report-card" onclick="showPage('laporan')">
+          <div class="report-icon" style="background:#dcfce7"><span style="font-size:20px">📊</span></div>
+          <div class="report-title">Buku Kas Harian</div>
+          <div class="report-desc">Catatan pemasukan dan pengeluaran kas setiap hari</div>
+          <div class="report-footer"><span class="badge badge-green">Aktif</span><i class="fa-solid fa-arrow-right" style="color:var(--green)"></i></div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:#fef3c7"><span style="font-size:20px">📋</span></div>
+          <div class="report-title">Jurnal Umum</div>
+          <div class="report-desc">Pencatatan semua transaksi dalam format jurnal double-entry</div>
+          <div class="report-footer"><span class="badge badge-gold">12 Entri</span><i class="fa-solid fa-arrow-right" style="color:var(--gold)"></i></div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:#dbeafe"><span style="font-size:20px">📈</span></div>
+          <div class="report-title">Laporan Laba Rugi</div>
+          <div class="report-desc">Ringkasan pendapatan, biaya, dan laba/rugi periode ini</div>
+          <div class="report-footer"><span class="badge badge-blue">Bulanan</span><i class="fa-solid fa-arrow-right" style="color:var(--blue)"></i></div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:#ede9fe"><span style="font-size:20px">🏦</span></div>
+          <div class="report-title">Neraca Keuangan</div>
+          <div class="report-desc">Aset, kewajiban, dan ekuitas organisasi</div>
+          <div class="report-footer"><span class="badge badge-purple">Triwulan</span><i class="fa-solid fa-arrow-right" style="color:var(--purple)"></i></div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:#fee2e2"><span style="font-size:20px">📤</span></div>
+          <div class="report-title">Laporan Arus Kas</div>
+          <div class="report-desc">Aliran masuk dan keluar kas dalam periode tertentu</div>
+          <div class="report-footer"><span class="badge badge-red">Mingguan</span><i class="fa-solid fa-arrow-right" style="color:var(--red)"></i></div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:#f0fdf4"><span style="font-size:20px">✅</span></div>
+          <div class="report-title">Rekonsiliasi</div>
+          <div class="report-desc">Pencocokan catatan kas dengan rekening bank</div>
+          <div class="report-footer"><span class="badge badge-gray">Manual</span><i class="fa-solid fa-arrow-right" style="color:var(--muted)"></i></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa-solid fa-book" style="color:var(--green)"></i> Jurnal Umum — Hari Ini</div>
+          <button class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Tambah Jurnal</button>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>No.</th><th>Tanggal</th><th>Keterangan</th><th>Akun Debit</th><th>Akun Kredit</th><th>Jumlah</th></tr></thead>
+              <tbody>
+                <tr><td>001</td><td>01/06/25</td><td class="td-bold">Penjualan makan pagi</td><td>Kas</td><td>Pendapatan Penjualan</td><td class="td-bold" style="color:var(--green)">Rp 850.000</td></tr>
+                <tr><td>002</td><td>01/06/25</td><td class="td-bold">Pembelian bahan baku</td><td>Persediaan Bahan Baku</td><td>Kas</td><td class="td-bold" style="color:var(--red)">Rp 320.000</td></tr>
+                <tr><td>003</td><td>01/06/25</td><td class="td-bold">Biaya gas LPG</td><td>Biaya Operasional</td><td>Kas</td><td class="td-bold" style="color:var(--red)">Rp 180.000</td></tr>
+                <tr><td>004</td><td>01/06/25</td><td class="td-bold">Penjualan makan siang</td><td>Kas</td><td>Pendapatan Penjualan</td><td class="td-bold" style="color:var(--green)">Rp 2.100.000</td></tr>
+                <tr><td>005</td><td>01/06/25</td><td class="td-bold">Gaji kasir harian</td><td>Biaya Gaji</td><td>Kas</td><td class="td-bold" style="color:var(--red)">Rp 150.000</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAPORAN HARIAN -->
+    <div class="page" id="page-laporan">
+      <div class="page-hero">
+        <h1>📋 Laporan Harian</h1>
+        <p>Rekap lengkap operasional MBG Cicendo setiap hari</p>
+        <div class="page-hero-badge">📊</div>
+      </div>
+
+      <div class="card mb-20">
+        <div class="card-header">
+          <div class="card-title"><i class="fa-solid fa-file-lines" style="color:var(--green)"></i> Laporan Operasional — 1 Juni 2025</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-print"></i> Cetak</button>
+            <button class="btn btn-primary btn-sm" onclick="downloadReport()"><i class="fa-solid fa-download"></i> Unduh PDF</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="grid-3 mb-20" style="gap:14px">
+            <div style="background:var(--green-pale);border-radius:12px;padding:16px;text-align:center">
+              <div style="font-size:11px;font-weight:700;color:var(--green-dark);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Total Pemasukan</div>
+              <div style="font-family:'Space Grotesk';font-size:24px;font-weight:700;color:var(--green-dark)">Rp 4.190.000</div>
+            </div>
+            <div style="background:var(--gold-pale);border-radius:12px;padding:16px;text-align:center">
+              <div style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Total Pengeluaran</div>
+              <div style="font-family:'Space Grotesk';font-size:24px;font-weight:700;color:#92400e">Rp 2.770.000</div>
+            </div>
+            <div style="background:#dbeafe;border-radius:12px;padding:16px;text-align:center">
+              <div style="font-size:11px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Laba Bersih</div>
+              <div style="font-family:'Space Grotesk';font-size:24px;font-weight:700;color:#1e40af">Rp 1.420.000</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div>
+              <table style="width:100%">
+                <thead><tr><th>Sesi</th><th>Porsi</th><th>Pendapatan</th></tr></thead>
+                <tbody>
+                  <tr><td class="td-bold">Sarapan (06–09)</td><td>89</td><td style="color:var(--green);font-weight:700">Rp 890.000</td></tr>
+                  <tr><td class="td-bold">Pagi (09–12)</td><td>124</td><td style="color:var(--green);font-weight:700">Rp 1.240.000</td></tr>
+                  <tr><td class="td-bold">Siang (12–15)</td><td>134</td><td style="color:var(--green);font-weight:700">Rp 2.060.000</td></tr>
+                  <tr><td class="td-bold"><strong>TOTAL</strong></td><td><strong>347</strong></td><td style="color:var(--green);font-weight:800">Rp 4.190.000</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <table style="width:100%">
+                <thead><tr><th>Kategori Biaya</th><th>Nominal</th></tr></thead>
+                <tbody>
+                  <tr><td class="td-bold">Bahan Baku</td><td style="color:var(--red);font-weight:700">Rp 1.850.000</td></tr>
+                  <tr><td class="td-bold">Gas & Listrik</td><td style="color:var(--red);font-weight:700">Rp 380.000</td></tr>
+                  <tr><td class="td-bold">Gaji Harian</td><td style="color:var(--red);font-weight:700">Rp 420.000</td></tr>
+                  <tr><td class="td-bold">Lain-lain</td><td style="color:var(--red);font-weight:700">Rp 120.000</td></tr>
+                  <tr><td class="td-bold"><strong>TOTAL</strong></td><td style="color:var(--red);font-weight:800">Rp 2.770.000</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:20px">
+            <label class="form-label">Catatan Manajer</label>
+            <textarea class="form-textarea" placeholder="Tambahkan catatan atau evaluasi operasional hari ini...">Operasional hari ini berjalan lancar. Target porsi tercapai (347 dari 319 target). Perlu segera restock beras dan minyak goreng sebelum besok. Beberapa karyawan terlambat perlu diberi peringatan.</textarea>
+          </div>
+          <button class="btn btn-primary" style="justify-content:center;width:100%"><i class="fa-solid fa-paper-plane"></i> Kirim Laporan ke Pusat</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVENTARIS -->
+    <div class="page" id="page-inventaris">
+      <div class="page-hero">
+        <h1>📦 Inventaris & Stok</h1>
+        <p>Pantau ketersediaan bahan baku dan peralatan MBG Cicendo</p>
+        <div class="page-hero-badge">🏭</div>
+      </div>
+
+      <div class="stats-grid mb-24">
+        <div class="stat-card green"><div class="stat-icon"><i class="fa-solid fa-boxes-stacked"></i></div><div class="stat-label">Total Item</div><div class="stat-value">48</div></div>
+        <div class="stat-card gold"><div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="stat-label">Stok Menipis</div><div class="stat-value">4</div></div>
+        <div class="stat-card blue"><div class="stat-icon"><i class="fa-solid fa-rotate"></i></div><div class="stat-label">Perlu Restock</div><div class="stat-value">2</div></div>
+        <div class="stat-card purple"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-label">Stok Aman</div><div class="stat-value">42</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-wheat-awn" style="color:var(--gold)"></i> Bahan Baku Utama</div>
+            <button class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Tambah Stok</button>
+          </div>
+          <div class="card-body">
+            <div id="stock-list"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-fire-burner" style="color:var(--red)"></i> Peralatan Dapur</div></div>
+          <div class="card-body">
+            <table><tbody>
+              <tr><td class="td-bold">Kompor Gas</td><td><span class="badge badge-green">Baik — 4 unit</span></td></tr>
+              <tr><td class="td-bold">Rice Cooker</td><td><span class="badge badge-green">Baik — 6 unit</span></td></tr>
+              <tr><td class="td-bold">Wajan Besar</td><td><span class="badge badge-gold">Perlu Service — 2</span></td></tr>
+              <tr><td class="td-bold">Pisau Dapur</td><td><span class="badge badge-green">Baik — 12 buah</span></td></tr>
+              <tr><td class="td-bold">Talenan</td><td><span class="badge badge-green">Baik — 8 buah</span></td></tr>
+              <tr><td class="td-bold">Piring/Mangkok</td><td><span class="badge badge-blue">250 set</span></td></tr>
+              <tr><td class="td-bold">Sendok Garpu</td><td><span class="badge badge-blue">300 set</span></td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MENU -->
+    <div class="page" id="page-menu">
+      <div class="page-hero">
+        <h1>🍜 Manajemen Menu</h1>
+        <p>Kelola daftar menu, porsi, dan harga MBG Cicendo</p>
+        <div class="page-hero-badge">🍽️</div>
+      </div>
+
+      <div class="section-header mb-20">
+        <div class="section-title">Menu <span>Aktif</span></div>
+        <button class="btn btn-primary" onclick="openModal('modal-menu')"><i class="fa-solid fa-plus"></i> Tambah Menu</button>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nama Menu</th><th>Kategori</th><th>Porsi/Hari</th><th>Harga</th><th>Status</th><th>Aksi</th></tr></thead>
+              <tbody>
+                <tr><td class="td-bold">🍚 Nasi + Lauk Komplit</td><td><span class="badge badge-green">Makan Berat</span></td><td>134</td><td class="td-bold">Rp 15.000</td><td><span class="badge badge-green">Aktif</span></td><td><button class="btn btn-secondary btn-sm">Edit</button></td></tr>
+                <tr><td class="td-bold">🍜 Mie Goreng</td><td><span class="badge badge-blue">Makan Berat</span></td><td>89</td><td class="td-bold">Rp 12.000</td><td><span class="badge badge-green">Aktif</span></td><td><button class="btn btn-secondary btn-sm">Edit</button></td></tr>
+                <tr><td class="td-bold">🥗 Sayur Bayam + Tahu</td><td><span class="badge badge-gold">Lauk</span></td><td>78</td><td class="td-bold">Rp 8.000</td><td><span class="badge badge-green">Aktif</span></td><td><button class="btn btn-secondary btn-sm">Edit</button></td></tr>
+                <tr><td class="td-bold">🍳 Nasi Goreng Telor</td><td><span class="badge badge-blue">Sarapan</span></td><td>56</td><td class="td-bold">Rp 10.000</td><td><span class="badge badge-green">Aktif</span></td><td><button class="btn btn-secondary btn-sm">Edit</button></td></tr>
+                <tr><td class="td-bold">🥤 Teh Manis / Es Teh</td><td><span class="badge badge-purple">Minuman</span></td><td>200</td><td class="td-bold">Rp 3.000</td><td><span class="badge badge-green">Aktif</span></td><td><button class="btn btn-secondary btn-sm">Edit</button></td></tr>
+                <tr><td class="td-bold">🍲 Soto Ayam</td><td><span class="badge badge-green">Makan Berat</span></td><td>0</td><td class="td-bold">Rp 13.000</td><td><span class="badge badge-gray">Nonaktif</span></td><td><button class="btn btn-secondary btn-sm">Aktifkan</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KARYAWAN -->
+    <div class="page" id="page-karyawan">
+      <div class="page-hero">
+        <h1>👥 Data Karyawan</h1>
+        <p>Kelola data seluruh karyawan MBG Cicendo</p>
+        <div class="page-hero-badge">👔</div>
+      </div>
+      <div class="section-header mb-20">
+        <div class="section-title">Daftar <span>Karyawan</span></div>
+        <button class="btn btn-primary" onclick="openModal('modal-karyawan')"><i class="fa-solid fa-user-plus"></i> Tambah Karyawan</button>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>No.</th><th>Nama Lengkap</th><th>Jabatan</th><th>Shift</th><th>Status</th><th>Bergabung</th><th>Aksi</th></tr></thead>
+              <tbody id="karyawan-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFIKASI -->
+    <div class="page" id="page-notif">
+      <div class="page-hero">
+        <h1>🔔 Notifikasi</h1>
+        <p>Pemberitahuan dan peringatan operasional terbaru</p>
+        <div class="page-hero-badge">📢</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Semua Notifikasi</div><button class="btn btn-secondary btn-sm">Tandai Semua Dibaca</button></div>
+        <div class="card-body">
+          <div class="notif-list" id="notif-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PENGATURAN -->
+    <div class="page" id="page-pengaturan">
+      <div class="page-hero">
+        <h1>⚙️ Pengaturan</h1>
+        <p>Konfigurasi sistem MBG Cicendo</p>
+        <div class="page-hero-badge">🔧</div>
+      </div>
+      <div class="grid-2">
+        <div class="card mb-20">
+          <div class="card-header"><div class="card-title">Informasi Dapur</div></div>
+          <div class="card-body">
+            <div class="form-group"><label class="form-label">Nama Dapur</label><input class="form-input" value="MBG Cicendo — Dapur Utama"></div>
+            <div class="form-group"><label class="form-label">Alamat</label><input class="form-input" value="Jl. Arjuna No. 12, Cicendo, Bandung"></div>
+            <div class="form-group"><label class="form-label">No. Telepon</label><input class="form-input" value="(022) 4231567"></div>
+            <div class="form-group"><label class="form-label">Kapasitas Produksi/Hari</label><input class="form-input" value="500 Porsi"></div>
+            <button class="btn btn-primary">Simpan Perubahan</button>
+          </div>
+        </div>
+        <div class="card mb-20">
+          <div class="card-header"><div class="card-title">Pengaturan Absensi</div></div>
+          <div class="card-body">
+            <div class="form-group"><label class="form-label">Jam Masuk Shift Pagi</label><input class="form-input" type="time" value="05:00"></div>
+            <div class="form-group"><label class="form-label">Toleransi Keterlambatan</label><input class="form-input" value="15 menit"></div>
+            <div class="form-group"><label class="form-label">Jam Masuk Shift Sore</label><input class="form-input" type="time" value="13:00"></div>
+            <div class="form-group"><label class="form-label">Metode Absensi</label>
+              <select class="form-select"><option>Manual (Input Manager)</option><option>QR Code</option><option>Fingerprint</option></select>
+            </div>
+            <button class="btn btn-primary">Simpan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-transaksi">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">💰 Tambah Transaksi</div>
+      <button class="modal-close" onclick="closeModal('modal-transaksi')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="form-group"><label class="form-label">Jenis Transaksi</label>
+      <select class="form-select"><option>Pemasukan</option><option>Pengeluaran</option></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nominal (Rp)</label><input class="form-input" type="number" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Tanggal & Waktu</label><input class="form-input" type="datetime-local"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Keterangan</label><input class="form-input" placeholder="Deskripsi transaksi..."></div>
+    <div class="form-group"><label class="form-label">Kategori</label>
+      <select class="form-select"><option>Penjualan Makanan</option><option>Bahan Baku</option><option>Gaji</option><option>Operasional</option><option>Lain-lain</option></select>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-transaksi')">Batal</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveTransaction()"><i class="fa-solid fa-save"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-absen">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">👆 Input Absensi Manual</div>
+      <button class="modal-close" onclick="closeModal('modal-absen')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="form-group"><label class="form-label">Pilih Karyawan</label>
+      <select class="form-select"><option>Siti Rahayu</option><option>Ahmad Fauzi</option><option>Budi Santoso</option><option>Dewi Kusuma</option></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-select"><option>Hadir</option><option>Terlambat</option><option>Izin</option><option>Sakit</option><option>Alpha</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Jam Masuk</label><input class="form-input" type="time" value="07:00"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Catatan</label><input class="form-input" placeholder="Keterangan tambahan..."></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-absen')">Batal</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveAbsen()"><i class="fa-solid fa-fingerprint"></i> Simpan Absensi</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-karyawan">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">👤 Tambah Karyawan Baru</div>
+      <button class="modal-close" onclick="closeModal('modal-karyawan')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nama Lengkap</label><input class="form-input" placeholder="Nama lengkap..."></div>
+      <div class="form-group"><label class="form-label">Jabatan</label>
+        <select class="form-select"><option>Juru Masak</option><option>Kasir</option><option>Pelayan</option><option>Kebersihan</option><option>Helper Dapur</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Shift</label>
+        <select class="form-select"><option>Pagi (05–13)</option><option>Sore (13–21)</option><option>Rotasi</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">No. HP</label><input class="form-input" placeholder="08xx-xxxx-xxxx"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Alamat</label><input class="form-input" placeholder="Alamat lengkap..."></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-karyawan')">Batal</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center"><i class="fa-solid fa-user-plus"></i> Simpan Karyawan</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-menu">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🍜 Tambah Menu Baru</div>
+      <button class="modal-close" onclick="closeModal('modal-menu')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nama Menu</label><input class="form-input" placeholder="Nama menu..."></div>
+      <div class="form-group"><label class="form-label">Kategori</label>
+        <select class="form-select"><option>Makan Berat</option><option>Sarapan</option><option>Lauk</option><option>Minuman</option><option>Snack</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Harga (Rp)</label><input class="form-input" type="number" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Target Porsi/Hari</label><input class="form-input" type="number" placeholder="0"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Bahan Utama</label><input class="form-input" placeholder="Contoh: Nasi, Ayam, Tempe..."></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal('modal-menu')">Batal</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center"><i class="fa-solid fa-plus"></i> Simpan Menu</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-success">
+  <div class="modal" style="max-width:380px;text-align:center">
+    <div style="font-size:56px;margin-bottom:16px">✅</div>
+    <div class="modal-title" style="font-size:20px;margin-bottom:8px" id="success-title">Berhasil Disimpan!</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:24px" id="success-desc">Data telah berhasil disimpan ke sistem.</div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="closeModal('modal-success')">Tutup</button>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const employees = [
+  { id:1, name:'Siti Rahayu', role:'Kasir', shift:'Pagi', color:'#16a34a', checkedIn:true, time:'05:12', avatar:'SR' },
+  { id:2, name:'Ahmad Fauzi', role:'Juru Masak', shift:'Pagi', color:'#f59e0b', checkedIn:true, time:'05:05', avatar:'AF' },
+  { id:3, name:'Budi Santoso', role:'Kasir', shift:'Sore', color:'#3b82f6', checkedIn:true, time:'12:58', avatar:'BS' },
+  { id:4, name:'Dewi Kusuma', role:'Pelayan', shift:'Pagi', color:'#8b5cf6', checkedIn:false, time:'-', avatar:'DK' },
+  { id:5, name:'Hendra Putra', role:'Pelayan', shift:'Sore', color:'#ef4444', checkedIn:false, time:'-', avatar:'HP' },
+  { id:6, name:'Rina Wati', role:'Juru Masak', shift:'Sore', color:'#16a34a', checkedIn:true, time:'12:55', avatar:'RW' },
+  { id:7, name:'Agus Setiawan', role:'Helper Dapur', shift:'Pagi', color:'#f59e0b', checkedIn:true, time:'05:20', avatar:'AS' },
+  { id:8, name:'Fitri Indah', role:'Kebersihan', shift:'Pagi', color:'#3b82f6', checkedIn:true, time:'05:30', avatar:'FI' },
+  { id:9, name:'Doni Hidayat', role:'Helper Dapur', shift:'Sore', color:'#8b5cf6', checkedIn:false, time:'-', avatar:'DH' },
+  { id:10, name:'Sri Mulyani', role:'Pelayan', shift:'Pagi', color:'#14b8a6', checkedIn:true, time:'05:08', avatar:'SM' },
+  { id:11, name:'Wahyu Nugroho', role:'Juru Masak', shift:'Pagi', color:'#f59e0b', checkedIn:true, time:'04:58', avatar:'WN' },
+  { id:12, name:'Lena Permata', role:'Kasir', shift:'Sore', color:'#16a34a', checkedIn:true, time:'13:02', avatar:'LP' },
+];
+
+const stocks = [
+  { name:'Beras', qty:12, unit:'kg', min:30, emoji:'🌾' },
+  { name:'Minyak Goreng', qty:5, unit:'liter', min:15, emoji:'🫙' },
+  { name:'Ayam', qty:8, unit:'kg', min:10, emoji:'🍗' },
+  { name:'Telur', qty:120, unit:'butir', min:50, emoji:'🥚' },
+  { name:'Sayuran Mix', qty:15, unit:'kg', min:10, emoji:'🥗' },
+  { name:'Tahu', qty:50, unit:'buah', min:30, emoji:'🟨' },
+  { name:'Tempe', qty:40, unit:'potong', min:25, emoji:'🟫' },
+  { name:'Gas LPG', qty:3, unit:'tabung', min:5, emoji:'🔥' },
+  { name:'Gula Pasir', qty:8, unit:'kg', min:5, emoji:'🍬' },
+  { name:'Garam', qty:4, unit:'kg', min:2, emoji:'🧂' },
+];
+
+const notifs = [
+  { icon:'🔴', bg:'#fee2e2', title:'Stok Beras Menipis', desc:'Sisa 12kg, minimum 30kg. Segera hubungi supplier.', time:'10 menit lalu', type:'danger' },
+  { icon:'🟡', bg:'#fef3c7', title:'4 Karyawan Terlambat', desc:'Budi, Dewi, Agus, dan Fitri terlambat lebih dari 15 menit.', time:'30 menit lalu', type:'warning' },
+  { icon:'🟢', bg:'#dcfce7', title:'Target Porsi Tercapai!', desc:'347 porsi terlayani, melampaui target 319 porsi hari ini.', time:'1 jam lalu', type:'success' },
+  { icon:'🔵', bg:'#dbeafe', title:'Pengiriman Bahan Baku Diterima', desc:'Sayur & bumbu dari supplier Pak Ahmad telah diterima.', time:'2 jam lalu', type:'info' },
+  { icon:'🟡', bg:'#fef3c7', title:'Jadwal Shift Perlu Dikonfirmasi', desc:'Jadwal minggu depan belum dikonfirmasi. Batas: Jumat.', time:'3 jam lalu', type:'warning' },
+];
+
+// ===== INIT =====
+function initApp() {
+  updateClock();
+  setInterval(updateClock, 1000);
+  renderAttendance();
+  renderKaryawanTable();
+  renderRevenueChart();
+  renderStockList();
+  renderNotifs();
+  renderShiftTable();
+  setTopbarDate();
+}
+
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  const el = document.getElementById('clock');
+  if(el) el.textContent = `${h}:${m}:${s}`;
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const dateEl = document.getElementById('today-date');
+  if(dateEl) dateEl.textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+}
+
+function setTopbarDate() {
+  const now = new Date();
+  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  const el = document.getElementById('topbar-date');
+  if(el) el.textContent = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+}
+
+function renderAttendance() {
+  const grid = document.getElementById('attendance-grid');
+  if(!grid) return;
+  grid.innerHTML = employees.map(emp => `
+    <div class="emp-card ${emp.checkedIn?'checked-in':''}" onclick="toggleAttendance(${emp.id})">
+      <div class="emp-avatar" style="background:${emp.color}">${emp.avatar}</div>
+      <div class="emp-name">${emp.name}</div>
+      <div class="emp-role">${emp.role} • Shift ${emp.shift}</div>
+      <div class="emp-time ${emp.checkedIn?'':'animate-pulse'}" style="color:${emp.checkedIn?'var(--green)':'var(--muted)'}">
+        ${emp.checkedIn ? '✅ Hadir — '+emp.time : '⏳ Belum Absen'}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleAttendance(id) {
+  const emp = employees.find(e=>e.id===id);
+  if(!emp) return;
+  if(!emp.checkedIn) {
+    const now = new Date();
+    emp.checkedIn = true;
+    emp.time = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    renderAttendance();
+    showSuccess('Absensi Berhasil!', `${emp.name} berhasil diabsen pada ${emp.time}`);
+  }
+}
+
+function renderKaryawanTable() {
+  const tb = document.getElementById('karyawan-table');
+  if(!tb) return;
+  const roleColors = { 'Kasir':'badge-green', 'Juru Masak':'badge-gold', 'Pelayan':'badge-blue', 'Helper Dapur':'badge-purple', 'Kebersihan':'badge-gray' };
+  tb.innerHTML = employees.map((e,i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td><div class="td-bold" style="display:flex;align-items:center;gap:8px">
+        <div style="width:28px;height:28px;border-radius:50%;background:${e.color};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">${e.avatar}</div>
+        ${e.name}
+      </div></td>
+      <td><span class="badge ${roleColors[e.role]||'badge-gray'}">${e.role}</span></td>
+      <td>${e.shift}</td>
+      <td><span class="badge badge-green">Aktif</span></td>
+      <td style="font-size:12px;color:var(--muted)">Jan 2025</td>
+      <td><button class="btn btn-secondary btn-sm">Edit</button></td>
+    </tr>
+  `).join('');
+}
+
+function renderRevenueChart() {
+  const data = [
+    {day:'Sen',val:3800000}, {day:'Sel',val:4100000}, {day:'Rab',val:3600000},
+    {day:'Kam',val:4500000}, {day:'Jum',val:5200000}, {day:'Sab',val:4800000}, {day:'Min',val:4190000}
+  ];
+  const max = Math.max(...data.map(d=>d.val));
+  const chart = document.getElementById('revenue-chart');
+  if(!chart) return;
+  chart.innerHTML = data.map(d => {
+    const pct = (d.val/max)*100;
+    const isToday = d.day==='Min';
+    return `<div class="bar-col">
+      <div class="bar-val">${(d.val/1000000).toFixed(1)}jt</div>
+      <div class="bar-fill" style="height:${pct}%;background:${isToday?'linear-gradient(180deg,var(--green-light),var(--green))':'linear-gradient(180deg,#86efac,#4ade80)'};opacity:${isToday?1:0.65};border-radius:6px 6px 0 0;min-height:8px"></div>
+      <div class="bar-label" style="color:${isToday?'var(--green)':'var(--muted)'};font-weight:${isToday?700:600}">${d.day}${isToday?' ★':''}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderStockList() {
+  const list = document.getElementById('stock-list');
+  if(!list) return;
+  list.innerHTML = stocks.map(s => {
+    const pct = Math.min((s.qty/s.min)*100, 100);
+    const low = s.qty < s.min;
+    return `<div class="stock-row">
+      <div>
+        <div class="stock-name">${s.emoji} ${s.name}</div>
+        <div class="stock-detail">Min: ${s.min} ${s.unit}</div>
+        <div class="progress-bar" style="margin-top:6px;width:140px">
+          <div class="progress-fill ${low?'red':'green'}" style="width:${pct}%"></div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div class="stock-qty" style="color:${low?'var(--red)':'var(--green)'}">${s.qty}</div>
+        <div class="stock-unit">${s.unit}</div>
+        <span class="badge ${low?'badge-red':'badge-green'}" style="margin-top:4px">${low?'⚠ Menipis':'✓ Aman'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderNotifs() {
+  const list = document.getElementById('notif-list');
+  if(!list) return;
+  list.innerHTML = notifs.map(n => `
+    <div class="notif-item">
+      <div class="notif-dot-icon" style="background:${n.bg};font-size:20px">${n.icon}</div>
+      <div>
+        <div class="notif-title">${n.title}</div>
+        <div class="notif-text">${n.desc}</div>
+        <div class="notif-time"><i class="fa-regular fa-clock"></i> ${n.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderShiftTable() {
+  const tbl = document.getElementById('shift-table');
+  if(!tbl) return;
+  const days = ['Nama','Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+  const shifts = [
+    {name:'Siti R.', s:['P','P','P','P','P','L','L']},
+    {name:'Ahmad F.', s:['P','P','P','S','S','P','P']},
+    {name:'Budi S.', s:['S','S','S','S','S','L','S']},
+    {name:'Dewi K.', s:['P','L','P','P','P','P','L']},
+    {name:'Rina W.', s:['S','S','L','S','S','S','S']},
+    {name:'Hendra P.', s:['L','S','S','S','L','S','S']},
+  ];
+  const colors = {P:'background:#dcfce7;color:#166534',S:'background:#dbeafe;color:#1e40af',L:'background:#fee2e2;color:#991b1b'};
+  const labels = {P:'Pagi',S:'Sore',L:'Libur'};
+  let html = days.map(d=>`<div class="shift-cell shift-header">${d}</div>`).join('');
+  shifts.forEach(row => {
+    html += `<div class="shift-cell shift-name">${row.name}</div>`;
+    row.s.forEach(s => {
+      html += `<div class="shift-cell"><span class="shift-badge" style="${colors[s]}">${labels[s]}</span></div>`;
+    });
+  });
+  tbl.innerHTML = html;
+}
+
+// ===== NAVIGATION =====
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const page = document.getElementById('page-'+id);
+  if(page) { page.classList.add('active'); page.scrollTop=0; }
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if(n.getAttribute('onclick')===`showPage('${id}')`) n.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===== MODALS =====
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+function showSuccess(title, desc) {
+  document.getElementById('success-title').textContent = title;
+  document.getElementById('success-desc').textContent = desc;
+  openModal('modal-success');
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
+});
+
+// ===== ACTIONS =====
+function saveTransaction() {
+  closeModal('modal-transaksi');
+  showSuccess('Transaksi Tersimpan!', 'Data transaksi berhasil dicatat dalam sistem keuangan.');
+}
+function saveAbsen() {
+  closeModal('modal-absen');
+  showSuccess('Absensi Tersimpan!', 'Data kehadiran karyawan telah berhasil direkam.');
+}
+function downloadReport() {
+  showSuccess('Laporan Siap Diunduh!', 'File laporan harian sedang disiapkan dan akan segera terunduh.');
+}
+
+// ===== RUN =====
+initApp();
+</script>
+</body>
+</html>
